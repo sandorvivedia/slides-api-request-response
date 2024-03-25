@@ -37,7 +37,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Build
-        run: npm run build -- --base /<name_of_repo>/
+        run: npm run build -- --base /slides-api-request-response/
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
