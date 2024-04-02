@@ -59,7 +59,7 @@ layoutClass: gap-16
 
 # Usage
 
-```php {monaco}
+```php {all|10,15-17}
 <?php
 
 namespace App\Http\Api\Controllers;
@@ -152,5 +152,98 @@ Returns a 201 HTTP status code, with response optional data
   ```
 
 ---
+layout: cover
+background: https://cover.sli.dev
+---
 
 # Laravel Data
+
+Powerful data objects for Laravel
+
+```php
+use Spatie\LaravelData\Data;
+
+class SongData extends Data
+{
+    public function __construct(
+        public string $title,
+        public string $artist,
+    ) {
+    }
+}
+```
+
+<div class="abs-br m-6 flex gap-2">
+  <a href="https://spatie.be/docs/laravel-data/v4/getting-started/quickstart" target="_blank" alt="spatie/laravel-data" title="spatie/laravel-data"
+    class="text-xl slidev-icon-btn opacity-50 !border-none !hover:text-white">
+    <carbon-logo-github />
+  </a>
+</div>
+
+---
+
+# As a DTO
+
+```php
+namespace App\Data;
+
+use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Optional;
+use App\Data\AddressData;
+
+class SiteData extends Data
+{
+    public function __construct(
+        public Optional|int $id,
+        public string $name,
+        public AddressData $address,
+        public bool $bacas,
+        public string $crm,
+        public string $knownAs,
+        public null|int $maxPlaylistItems
+    ) {
+    }
+}
+
+```
+
+---
+
+# As a Resource
+
+````md magic-move
+```php {*|10}
+// step 1
+class SiteController extends Controller
+{
+    public function index(IndexRequest $request): SiteCollection
+    {
+        $sites = Site::orderBy('siteName')
+            ->search($request->string('search'))
+            ->paginateIfRequested($request);
+
+        return new SiteCollection($sites);
+    }
+}
+```
+
+```php {4,10|*}
+// step 2
+class SiteController extends Controller
+{
+    public function index(IndexRequest $request): DataCollection
+    {
+        $sites = Site::orderBy('siteName')
+            ->search($request->string('search'))
+            ->paginateIfRequested($request);
+
+        return SiteData::collect($sites, DataCollection::class)->wrap('sites');
+    }
+}
+```
+````
+
+<!-- Footer -->
+
+- [Data Collections](https://spatie.be/docs/laravel-data/v4/as-a-data-transfer-object/collections#content-datacollections-paginateddatacollections-and-cursorpaginatedcollections)
+- [From data to resource](https://spatie.be/docs/laravel-data/v4/as-a-resource/from-data-to-resource)
